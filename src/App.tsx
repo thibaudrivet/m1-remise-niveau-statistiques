@@ -4,6 +4,20 @@ import { course, magritIntroduction, sessionTwo } from "./content";
 type Choice = "areas" | "symbols";
 type DataKind = "stock" | "ratio";
 type InterfaceZone = "topbar" | "sidebar" | "canvas";
+type BonusContent = {
+  title: string;
+  introduction: string;
+  challenges: readonly {
+    id: string;
+    label: string;
+    title: string;
+    prompt: string;
+    tasks: readonly string[];
+    answer: string;
+    hint: string;
+  }[];
+  sharePrompt: string;
+};
 
 const scrollToSection = (id: string) => document.getElementById(id)?.scrollIntoView();
 
@@ -24,6 +38,34 @@ function MiniMap({ mode }: { mode: Choice }) {
         <circle key={index} cx={territory.cx} cy={territory.cy} r={Math.sqrt(territory.value) * 2.2} fill="#f97316" fillOpacity="0.74" stroke="#9a3412" strokeWidth="1.5" />
       ))}
     </svg>
+  );
+}
+
+function BonusSection({ id, bonus }: { id: string; bonus: BonusContent }) {
+  const titleId = `${id}-title`;
+
+  return (
+    <section id={id} className="bonus-section" aria-labelledby={titleId}>
+      <p className="eyebrow">Facultatif · Pour aller plus loin</p>
+      <h2 id={titleId}>{bonus.title}</h2>
+      <p className="lead">{bonus.introduction}</p>
+      <div className="bonus-grid">
+        {bonus.challenges.map((challenge) => (
+          <article className="bonus-card" key={challenge.id}>
+            <p className="bonus-label">{challenge.label}</p>
+            <h3>{challenge.title}</h3>
+            <p>{challenge.prompt}</p>
+            <ul>{challenge.tasks.map((task) => <li key={task}>{task}</li>)}</ul>
+            <p className="bonus-answer"><strong>Votre trace :</strong> {challenge.answer}</p>
+            <details>
+              <summary>Besoin d’une piste ?</summary>
+              <p>{challenge.hint}</p>
+            </details>
+          </article>
+        ))}
+      </div>
+      <div className="bonus-share"><span aria-hidden="true">?</span><div><strong>À partager si le temps le permet</strong><p>{bonus.sharePrompt}</p></div></div>
+    </section>
   );
 }
 
@@ -66,7 +108,7 @@ function SessionTwo() {
           <h1>{sessionTwo.introductionTitle}</h1>
           <div className="progress-label"><span>Progression</span><span>{progress}%</span></div>
           <div className="progress" aria-label={`Progression : ${progress} %`}><span style={{ width: `${progress}%` }} /></div>
-          <nav aria-label="Sommaire"><button type="button" onClick={() => scrollToSection("objectifs")}>1. Objectifs</button><button type="button" onClick={() => scrollToSection("diagnostic")}>2. Diagnostic</button><button type="button" onClick={() => scrollToSection("repere")}>3. Stock ou ratio ?</button><button type="button" onClick={() => scrollToSection("controle")}>4. Point de contrôle</button></nav>
+          <nav aria-label="Sommaire"><button type="button" onClick={() => scrollToSection("objectifs")}>1. Objectifs</button><button type="button" onClick={() => scrollToSection("diagnostic")}>2. Diagnostic</button><button type="button" onClick={() => scrollToSection("repere")}>3. Stock ou ratio ?</button><button type="button" onClick={() => scrollToSection("controle")}>4. Point de contrôle</button><button type="button" onClick={() => scrollToSection("bonus-choisir")}>5. Questions bonus</button></nav>
         </aside>
 
         <div className="lesson-content">
@@ -104,6 +146,8 @@ function SessionTwo() {
             {quizDone && <div className={`feedback ${quizCorrect ? "correct" : "retry"}`} aria-live="polite">{quizCorrect ? <><strong>Tout est juste.</strong> Formulez maintenant la règle avec vos propres mots.</> : <><strong>Une réponse est à revoir.</strong> Cherchez si la variable contient explicitement ou implicitement un dénominateur.</>}</div>}
             <details><summary>Afficher l’explication détaillée</summary><p><strong>Habitants</strong> et <strong>établissements</strong> sont des effectifs comptés. La <strong>part des 65 ans ou plus</strong> rapporte leur nombre à la population totale. La <strong>densité</strong> rapporte la population à une superficie.</p></details>
           </section>
+
+          <BonusSection id="bonus-choisir" bonus={sessionTwo.bonus} />
 
           <a className="next-card" href="#/seance-2/magrit"><div><p className="eyebrow">Prochaine étape</p><h2>Prendre en main Magrit</h2><p>Importer les fichiers, identifier les couches et explorer les données avant de produire une première carte.</p></div><strong>Continuer →</strong></a>
         </div>
@@ -189,6 +233,7 @@ function MagritIntroduction() {
             <button type="button" onClick={() => scrollToSection("importer")}>3. Importer</button>
             <button type="button" onClick={() => scrollToSection("verifier")}>4. Vérifier</button>
             <button type="button" onClick={() => scrollToSection("controle-magrit")}>5. Point de contrôle</button>
+            <button type="button" onClick={() => scrollToSection("bonus-magrit")}>6. Questions bonus</button>
           </nav>
         </aside>
 
@@ -257,7 +302,6 @@ function MagritIntroduction() {
             </div>
             <div className="check-summary" aria-live="polite"><strong>{Object.values(checks).filter(Boolean).length} / {magritIntroduction.verificationItems.length}</strong><span>{checksDone ? "Contrôles terminés : formulez à voix haute ce que représente une ligne." : "contrôles effectués"}</span></div>
             <details><summary>Comment reconnaître une couche et une table ?</summary><p>Une couche géographique possède une géométrie et peut être dessinée dans la zone centrale. Une table contient des lignes et des colonnes, mais pas nécessairement de géométrie. Dans le gestionnaire, Magrit les sépare visuellement.</p></details>
-            <details><summary>Approfondissement · Interroger la qualité des données</summary><p>Repérez une variable que vous pensez utiliser ensuite. Son nom est-il explicite ? Son type est-il numérique ? Contient-elle des valeurs manquantes ? Quelle unité et quelle date lui sont associées ?</p></details>
           </section>
 
           <section id="controle-magrit">
@@ -268,8 +312,10 @@ function MagritIntroduction() {
               {magritIntroduction.checkpoint.answers.map((answer) => <button key={answer.id} type="button" onClick={() => setCheckpoint(answer.id)} className={checkpoint === answer.id ? "selected" : ""} aria-pressed={checkpoint === answer.id}>{answer.label}</button>)}
             </div>
             {selectedCheckpoint && <div className={`feedback ${selectedCheckpoint.correct ? "correct" : "retry"}`} aria-live="polite"><strong>{selectedCheckpoint.correct ? "Choix pertinent." : "Pas encore."}</strong> {selectedCheckpoint.feedback}</div>}
-            <div className="sync-card"><span aria-hidden="true">◷</span><div><strong>Attendez le signal collectif avant de poursuivre.</strong><p>Préparez une phrase : « Une ligne représente…, la couche contient…, et la prochaine opération utile est… »</p></div></div>
+            <div className="sync-card"><span aria-hidden="true">◷</span><div><strong>Attendez le signal collectif avant de poursuivre.</strong><p>Préparez une phrase : « Une ligne représente…, la couche contient…, et la prochaine opération utile est… » Si vous avez fini, choisissez une question bonus ci-dessous pendant l’attente.</p></div></div>
           </section>
+
+          <BonusSection id="bonus-magrit" bonus={magritIntroduction.bonus} />
 
           <section className="next-card muted-next"><div><p className="eyebrow">Étape suivante</p><h2>Relier et représenter les données</h2><p>La suite dépendra du jeu de données retenu, des identifiants disponibles et des objectifs confirmés pour la séance.</p></div><strong>À préciser</strong></section>
         </div>

@@ -32,6 +32,63 @@ export const sessionTwo = {
     { label: "Nombre d’établissements scolaires", answer: "stock" },
     { label: "Habitants par km²", answer: "ratio" },
   ],
+  bonus: {
+    title: "Questions bonus : poussez le raisonnement",
+    introduction:
+      "Vous avez terminé le point de contrôle ? Choisissez un seul défi. L’objectif n’est pas d’aller plus vite, mais de préciser la question géographique avant de choisir une représentation. Cette partie ne compte pas dans la progression.",
+    challenges: [
+      {
+        id: "denominator",
+        label: "Défi 1 · Transformer",
+        title: "Changer de dénominateur, est-ce changer de question ?",
+        prompt:
+          "Vous connaissez le nombre d’habitants âgés de 65 ans ou plus dans chaque territoire. Imaginez deux indicateurs relatifs construits à partir de cet effectif.",
+        tasks: [
+          "Choisissez un dénominateur pertinent pour chacun des deux indicateurs.",
+          "Formulez la question géographique à laquelle répondrait chaque indicateur.",
+          "Expliquez pourquoi les deux cartes pourraient classer les territoires différemment.",
+        ],
+        answer:
+          "Présentez vos propositions sous la forme : « … ÷ … permet de comparer… »",
+        hint:
+          "Vous pouvez rapporter l’effectif à la population totale pour étudier la structure par âge, ou à la superficie pour étudier une concentration spatiale. Les deux indicateurs ne décrivent pas le même phénomène.",
+      },
+      {
+        id: "median",
+        label: "Défi 2 · Nuancer",
+        title: "Toute variable qui n’est pas un stock est-elle un ratio ?",
+        prompt:
+          "Prenez le revenu médian d’un territoire. Il ne s’agit ni d’un nombre de revenus ni d’une division entre deux effectifs.",
+        tasks: [
+          "Expliquez avec vos mots ce que mesure une médiane.",
+          "Diriez-vous que cette variable est extensive ou intensive ?",
+          "Choisissez entre symboles proportionnels et plages de couleurs, puis justifiez votre décision.",
+        ],
+        answer:
+          "Complétez : « Le revenu médian n’est pas un ratio, mais je choisirais… parce que… »",
+        hint:
+          "Une variable intensive caractérise un territoire sans augmenter mécaniquement avec sa taille ou sa population. Elle peut donc être représentée par des plages de couleurs, même si elle n’est pas un ratio au sens strict.",
+      },
+      {
+        id: "explanation",
+        label: "Défi 3 · Interpréter",
+        title: "Peut-on expliquer une carte uniquement en la regardant ?",
+        prompt:
+          "Revenez à la carte en symboles proportionnels du diagnostic et choisissez un territoire qui attire votre attention.",
+        tasks: [
+          "Rédigez un constat qui décrit seulement ce qui est visible.",
+          "Proposez ensuite une hypothèse susceptible d’expliquer ce constat.",
+          "Nommez une donnée supplémentaire nécessaire pour examiner cette hypothèse.",
+        ],
+        answer:
+          "Séparez trois phrases : « J’observe… », « Je fais l’hypothèse… », puis « Pour la vérifier, il faudrait… »",
+        hint:
+          "La carte montre ici une quantité par territoire. Une cause possible — superficie, urbanisation ou autre — reste une hypothèse tant qu’elle n’est pas confrontée à d’autres informations.",
+      },
+    ],
+    sharePrompt:
+      "Quel défi montre le mieux que la représentation dépend de la question posée ? Préparez un exemple précis à expliquer au groupe.",
+  },
 } as const;
 
 export const magritIntroduction = {
@@ -98,6 +155,63 @@ export const magritIntroduction = {
     "Je peux ouvrir le tableau associé à la couche ou à la table.",
     "J’ai identifié ce que représente une ligne du tableau.",
   ],
+  bonus: {
+    title: "Questions bonus : enquêtez sur les données",
+    introduction:
+      "Vous avez terminé les contrôles ? Choisissez un défi parmi ceux que permettent les fichiers disponibles. Il n’est pas nécessaire de tous les faire et cette partie ne compte pas dans la progression.",
+    challenges: [
+      {
+        id: "variable",
+        label: "Défi 1 · Décrire",
+        title: "Une variable est-elle vraiment prête à être cartographiée ?",
+        prompt:
+          "Choisissez une variable quantitative qui pourrait être utilisée plus tard dans la séance, puis établissez sa fiche d’identité.",
+        tasks: [
+          "Que mesure-t-elle, pour quelle unité d’observation et à quelle date ?",
+          "Son type est-il bien numérique dans Magrit ?",
+          "Repérez-vous des valeurs manquantes, nulles ou surprenantes ?",
+        ],
+        answer:
+          "Préparez une phrase : « Cette variable mesure…, pour…, en…, mais je dois encore vérifier… »",
+        hint:
+          "Le nom d’une colonne ne suffit pas toujours. Cherchez aussi une documentation, une unité ou une date dans les éléments fournis pendant la séance. Si l’information manque, signalez-le : c’est déjà un résultat utile.",
+      },
+      {
+        id: "identifier",
+        label: "Défi 2 · Relier",
+        title: "Un identifiant commun garantit-il une bonne jointure ?",
+        prompt:
+          "Si vous disposez d’une couche et d’une table séparée, comparez les colonnes qui pourraient servir à les relier.",
+        tasks: [
+          "Les identifiants ont-ils le même format dans les deux tableaux ?",
+          "Sont-ils uniques ou certains apparaissent-ils plusieurs fois ?",
+          "Des territoires semblent-ils présents d’un côté mais absents de l’autre ?",
+        ],
+        answer:
+          "Concluez : la jointure paraît-elle possible immédiatement, possible après correction, ou impossible à évaluer ? Justifiez avec un contrôle précis.",
+        hint:
+          "Deux colonnes peuvent porter le même nom sans contenir exactement les mêmes codes. Comparez quelques valeurs, leur longueur, les éventuels zéros initiaux et le nombre de lignes.",
+      },
+      {
+        id: "anomaly",
+        label: "Défi 3 · Questionner",
+        title: "Une valeur étonnante est-elle forcément une erreur ?",
+        prompt:
+          "Repérez une valeur qui vous semble très grande, très petite ou inhabituelle. Ne cherchez pas encore à l’expliquer.",
+        tasks: [
+          "Décrivez précisément ce qui vous étonne, sans employer « anormal » ou « bizarre ».",
+          "Vérifiez l’unité, la date et la valeur dans le tableau.",
+          "Proposez une vérification supplémentaire qui permettrait de distinguer erreur et cas réel.",
+        ],
+        answer:
+          "Distinguez votre constat de votre hypothèse : « J’observe que… Pour savoir si…, je vérifierais… »",
+        hint:
+          "À ce stade, la carte ou le tableau permet de repérer un cas, pas d’en donner la cause. Une comparaison avec la source, une autre date ou une variable liée peut aider.",
+      },
+    ],
+    sharePrompt:
+      "Quelle vérification a le plus modifié votre compréhension des données ? Préparez une réponse en deux phrases : une pour le constat, une pour ce qu’il reste à vérifier.",
+  },
   checkpoint: {
     prompt:
       "Un fond de carte et une table statistique sont bien importés. Quelle est la prochaine vérification utile ?",

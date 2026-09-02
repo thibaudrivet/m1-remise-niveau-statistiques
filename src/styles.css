@@ -141,6 +141,21 @@ details p { margin: 0 0 1rem; color: #5c6c7c; }
 .sync-card { display: flex; gap: .9rem; margin-top: 1.5rem; border-radius: .85rem; padding: 1rem; background: #17324d; color: white; }
 .sync-card > span { font-size: 1.4rem; }
 .sync-card p { margin: .2rem 0 0; color: #dbeafe; }
+.bonus-section { border: 1px solid #cbd5e1; border-radius: 1.2rem; padding: clamp(1.4rem, 4vw, 2.2rem); background: #f8fafc; }
+.bonus-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: 1rem; margin-top: 1.5rem; }
+.bonus-card { display: flex; min-width: 0; flex-direction: column; border: 1px solid #d9e2ec; border-radius: .9rem; padding: 1.2rem; background: white; }
+.bonus-label { margin: 0; color: #1d4ed8; font-size: .75rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
+.bonus-card h3 { margin: .45rem 0 .7rem; color: #17324d; font-size: 1.08rem; line-height: 1.35; }
+.bonus-card > p:not(.bonus-label, .bonus-answer) { margin: 0; color: #5c6c7c; }
+.bonus-card ul { margin: 1rem 0; padding-left: 1.2rem; color: #334a61; }
+.bonus-card li + li { margin-top: .45rem; }
+.bonus-answer { margin: auto 0 0; border-left: 3px solid #2563eb; padding: .75rem; background: #eff6ff; color: #263d53; }
+.bonus-card details { margin-top: .8rem; border-top: 1px solid #d9e2ec; border-bottom: 0; }
+.bonus-card summary { padding-bottom: .45rem; color: #1d4ed8; }
+.bonus-card details p { margin-bottom: .5rem; font-size: .9rem; }
+.bonus-share { display: flex; gap: .9rem; margin-top: 1rem; border-radius: .85rem; padding: 1rem; background: #eef6ff; color: #334a61; }
+.bonus-share > span { display: grid; flex: 0 0 auto; width: 1.8rem; height: 1.8rem; place-items: center; border-radius: 99px; background: #1d4ed8; color: white; font-weight: 900; }
+.bonus-share p { margin: .2rem 0 0; }
 .muted-next { background: #334a61; }
 .muted-next > strong { border-radius: 99px; padding: .35rem .7rem; background: rgba(255,255,255,.12); white-space: nowrap; }
 @media (max-width: 760px) { .session-grid, .map-grid, .concept-grid, .objectives, .zone-tabs { grid-template-columns: 1fr; } .lesson-layout { grid-template-columns: 1fr; gap: 2.5rem; } .lesson-aside { position: static; } .lesson-aside nav { display: none; } .duration { display: none; } .magrit-hero { grid-template-columns: 1fr; } .magrit-hero .objectives, .magrit-hero .privacy-note { grid-column: auto; } .launch-button { justify-content: center; } }
