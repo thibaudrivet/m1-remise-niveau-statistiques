@@ -73,3 +73,14 @@ GitHub Pages héberge les supports publics et interactifs. UniversiTICE conserve
 - le lien institutionnel vers le support.
 
 Les réponses aux exercices interactifs de ce site ne sont ni envoyées ni enregistrées.
+
+## Séance 2 — décisions encore ouvertes
+
+La deuxième partie, « Prendre en main Magrit », reste volontairement indépendante d’un jeu de données précis. Avant de construire l’étape suivante, l’équipe enseignante doit encore confirmer :
+
+- le territoire et le jeu de données utilisés ;
+- les fichiers distribués aux étudiants et leur canal de diffusion ;
+- la présence ou non d’une jointure entre un fond de carte et une table ;
+- les identifiants à comparer et les contrôles attendus après la jointure ;
+- la première représentation à produire et le niveau attendu sur la discrétisation ;
+- la durée exacte, la répartition de l’animation et l’éventuel livrable étudiant.
