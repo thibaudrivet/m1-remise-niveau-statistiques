@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { course, magritIntroduction, sessionTwo } from "./content";
+import { course, magritApplication, magritIntroduction, sessionTwo } from "./content";
 
 type Choice = "areas" | "symbols";
 type DataKind = "stock" | "ratio";
@@ -280,7 +280,7 @@ function MagritIntroduction() {
           <section id="importer">
             <p className="eyebrow">02 · Manipulation guidée</p>
             <h2>Importer sans perdre de vue les données</h2>
-            <p className="lead">Utilisez le ou les fichiers indiqués pendant la séance. Le jeu de données et le territoire étudié seront précisés par l’équipe enseignante.</p>
+            <p className="lead">Utilisez le fichier <code>donnees_commune_mutation_76.gpkg</code>. Il rassemble la géométrie des communes de Seine-Maritime et les indicateurs agrégés utilisés dans la suite.</p>
             <ol className="step-list">
               {magritIntroduction.importSteps.map((step, index) => (
                 <li key={step.title}><span>{String(index + 1).padStart(2, "0")}</span><div><h3>{step.title}</h3><p>{step.text}</p>{index === 0 && <a href="https://magrit.cnrs.fr/app/" target="_blank" rel="noreferrer">Accéder à l’application ↗</a>}</div></li>
@@ -288,7 +288,7 @@ function MagritIntroduction() {
             </ol>
             <div className="note"><strong>Pause avant de valider.</strong> Un nom de fichier ne suffit pas à décrire une donnée. Notez le nombre d’entités, la géométrie et le SCR lorsque Magrit les affiche.</div>
             <details><summary>Le fichier ne s’affiche pas comme prévu</summary><p>Vérifiez son format et recommencez l’import. Magrit accepte notamment les données géographiques GeoJSON, Shapefile et GeoPackage, ainsi que les tables CSV et XLSX. Pour un Shapefile, conservez ensemble les fichiers qui le composent.</p></details>
-            <details><summary>Pourquoi importer une couche et une table séparées ?</summary><p>La couche porte la géométrie des territoires ; la table peut porter les valeurs statistiques. Leur présence dans Magrit ne signifie pas encore qu’elles sont reliées : il faudra identifier une clé commune avant une éventuelle jointure.</p></details>
+            <details><summary>Faut-il effectuer une jointure ici ?</summary><p>Non. Dans ce GeoPackage, la géométrie communale et les indicateurs statistiques se trouvent déjà dans la même couche. La colonne <code>id</code> identifie les communes.</p></details>
           </section>
 
           <section id="verifier">
@@ -317,16 +317,123 @@ function MagritIntroduction() {
 
           <BonusSection id="bonus-magrit" bonus={magritIntroduction.bonus} />
 
-          <section className="next-card muted-next"><div><p className="eyebrow">Étape suivante</p><h2>Relier et représenter les données</h2><p>La suite dépendra du jeu de données retenu, des identifiants disponibles et des objectifs confirmés pour la séance.</p></div><strong>À préciser</strong></section>
+          <a className="next-card" href="#/seance-2/magrit/application"><div><p className="eyebrow">Étape suivante</p><h2>Cartographier les mutations foncières</h2><p>Produire une première carte communale, comparer moyenne et médiane, puis formuler une interprétation prudente.</p></div><strong>Continuer →</strong></a>
         </div>
       </div>
     </main>
   );
 }
 
+function MagritApplication() {
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [checks, setChecks] = useState<Record<number, boolean>>({});
+  const questions = magritApplication.questions;
+  const questionEntries = Object.entries(questions) as [keyof typeof questions, (typeof questions)[keyof typeof questions]][];
+  const correctAnswers = questionEntries.filter(([key, question]) => question.answers.find((answer) => answer.id === answers[key])?.correct).length;
+  const checksDone = magritApplication.productionChecks.every((_, index) => checks[index]);
+  const progress = 20 + correctAnswers * 20 + (checksDone ? 20 : 0);
+
+  return (
+    <main>
+      <header className="topbar">
+        <a href="#/" className="brand"><span className="brand-icon">⌖</span><span>Cartographie thématique</span></a>
+        <span className="duration">◷ {magritApplication.duration}</span>
+      </header>
+      <div className="lesson-layout">
+        <aside className="lesson-aside">
+          <a href="#/seance-2/magrit" className="back-link">← Revenir à la prise en main</a>
+          <p className="eyebrow">Séance {sessionTwo.number} · Troisième partie</p>
+          <h1>{magritApplication.title}</h1>
+          <div className="progress-label"><span>Progression</span><span>{progress}%</span></div>
+          <div className="progress" aria-label={`Progression : ${progress} %`}><span style={{ width: `${progress}%` }} /></div>
+          <nav aria-label="Sommaire">
+            <button type="button" onClick={() => scrollToSection("application-objectifs")}>1. Objectifs</button>
+            <button type="button" onClick={() => scrollToSection("jeu-donnees")}>2. Lire les données</button>
+            <button type="button" onClick={() => scrollToSection("premiere-carte")}>3. Première carte</button>
+            <button type="button" onClick={() => scrollToSection("comparer-cartes")}>4. Comparer</button>
+            <button type="button" onClick={() => scrollToSection("interpreter-carte")}>5. Interpréter</button>
+          </nav>
+        </aside>
+
+        <div className="lesson-content">
+          <section id="application-objectifs" className="content-card magrit-hero">
+            <div><p className="eyebrow">Votre cap</p><h2>De la variable au message cartographique</h2><p className="lead">Vous allez construire dans Magrit une carte de la valeur foncière médiane par commune, puis tester ce que change le choix de la moyenne.</p></div>
+            <a className="launch-button" href="https://magrit.cnrs.fr/app/" target="_blank" rel="noreferrer">Ouvrir Magrit <span aria-hidden="true">↗</span></a>
+            <ul className="objectives">{magritApplication.objectives.map((objective) => <li key={objective}><span>✓</span>{objective}</li>)}</ul>
+            <p className="privacy-note"><span aria-hidden="true">◇</span><span><strong>Trace formative.</strong> Les réponses cochées sur ce support restent locales et ne sont ni envoyées ni enregistrées.</span></p>
+          </section>
+
+          <section id="jeu-donnees">
+            <p className="eyebrow">01 · Lire les données</p>
+            <h2>Une couche, une commune par ligne</h2>
+            <p className="lead">Avant de cartographier, confrontez ce que Magrit affiche aux caractéristiques attendues du fichier.</p>
+            <dl className="dataset-facts">
+              <div><dt>Fichier</dt><dd><code>{magritApplication.dataset.file}</code></dd></div>
+              <div><dt>Couche</dt><dd><code>{magritApplication.dataset.layer}</code></dd></div>
+              <div><dt>Territoire</dt><dd>{magritApplication.dataset.territory}</dd></div>
+              <div><dt>Unité</dt><dd>{magritApplication.dataset.unit}</dd></div>
+              <div><dt>Identifiant</dt><dd><code>{magritApplication.dataset.identifier}</code></dd></div>
+              <div><dt>Contrôle attendu</dt><dd>{magritApplication.dataset.expectedFeatureCount} entités · {magritApplication.dataset.geometry} · {magritApplication.dataset.crs}</dd></div>
+              <div><dt>Millésime récupéré</dt><dd>{magritApplication.dataset.vintage}</dd></div>
+              <div><dt>Licence</dt><dd>{magritApplication.dataset.license}</dd></div>
+              <div className="dataset-fact-wide"><dt>Sources</dt><dd>{magritApplication.dataset.sources}</dd></div>
+              <div className="dataset-fact-wide"><dt>Préparation</dt><dd>{magritApplication.dataset.processing}</dd></div>
+            </dl>
+            <div className="variable-table" role="region" aria-label="Variables du jeu de données" tabIndex={0}>
+              <table><caption>Indicateurs disponibles pour chaque commune</caption><thead><tr><th scope="col">Thème</th><th scope="col">Unité</th><th scope="col">Médiane</th><th scope="col">Moyenne</th></tr></thead><tbody>{magritApplication.dataset.indicators.map((indicator) => <tr key={indicator.theme}><th scope="row">{indicator.theme}</th><td>{indicator.unit}</td><td><code>{indicator.median}</code></td><td><code>{indicator.mean}</code></td></tr>)}</tbody></table>
+            </div>
+            <div className="note"><strong>Millésime et période ne sont pas synonymes.</strong> « Janvier 2025 » indique la version récupérée. Vérifiez dans la documentation quelles dates de mutation sont effectivement incluses.</div>
+            <ApplicationQuestion questionKey="variable" answers={answers} onAnswer={setAnswers} />
+          </section>
+
+          <section id="premiere-carte">
+            <p className="eyebrow">02 · Application guidée</p>
+            <h2>Construire la carte de la valeur foncière médiane</h2>
+            <ApplicationQuestion questionKey="representation" answers={answers} onAnswer={setAnswers} />
+            <ol className="step-list">{magritApplication.firstMapSteps.map((step, index) => <li key={step}><span>{String(index + 1).padStart(2, "0")}</span><div><p>{step}</p></div></li>)}</ol>
+            <details><summary>Comment choisir une discrétisation ?</summary><p>Observez la forme de la distribution et comparez au moins deux méthodes proposées par Magrit. Gardez un nombre de classes lisible, puis expliquez ce que le changement de méthode rend plus ou moins visible. Le niveau attendu sur la discrétisation reste à confirmer par l’équipe enseignante.</p></details>
+            <div className="checklist">{magritApplication.productionChecks.map((item, index) => <label key={item} className={checks[index] ? "checked" : ""}><input type="checkbox" checked={Boolean(checks[index])} onChange={(event) => setChecks({ ...checks, [index]: event.target.checked })} /><span aria-hidden="true">✓</span><strong>{item}</strong></label>)}</div>
+            <div className="check-summary" aria-live="polite"><strong>{Object.values(checks).filter(Boolean).length} / {magritApplication.productionChecks.length}</strong><span>{checksDone ? "Carte contrôlée : vous pouvez passer à la comparaison." : "contrôles effectués"}</span></div>
+          </section>
+
+          <section id="comparer-cartes">
+            <p className="eyebrow">03 · Comparaison</p>
+            <h2>Remplacer la médiane par la moyenne</h2>
+            <p className="lead">Dupliquez si possible la représentation, remplacez <code>valeur_fonciere_med</code> par <code>valeur_fonciere_mean</code> et conservez les autres choix aussi proches que possible. Repérez ensuite ce qui change et ce qui ne change pas.</p>
+            <ApplicationQuestion questionKey="comparison" answers={answers} onAnswer={setAnswers} />
+            <div className="trace-card"><strong>Votre trace</strong><p>« Avec la médiane, j’observe… Avec la moyenne… Cette différence peut venir de…, mais il faudrait vérifier… »</p></div>
+          </section>
+
+          <section id="interpreter-carte">
+            <p className="eyebrow">04 · Interprétation</p>
+            <h2>Dire ce que la carte montre — et seulement cela</h2>
+            <div className="prompt-grid">{magritApplication.interpretationPrompts.map((prompt, index) => <article key={prompt}><span>{index + 1}</span><p>{prompt}</p></article>)}</div>
+            <div className="sync-card"><span aria-hidden="true">◷</span><div><strong>Point de synchronisation collective.</strong><p>Présentez une observation, une hypothèse et une donnée manquante. Une carte de valeurs communales ne permet pas, à elle seule, d’expliquer les écarts observés.</p></div></div>
+            <details><summary>Approfondissement facultatif</summary><p>Reproduisez la démarche avec <code>surface_reelle_bati_med</code> ou <code>surface_terrain_med</code>. Comparez l’organisation spatiale obtenue à celle de la valeur foncière, sans conclure à une relation causale.</p></details>
+          </section>
+        </div>
+      </div>
+    </main>
+  );
+}
+
+function ApplicationQuestion({ questionKey, answers, onAnswer }: { questionKey: keyof typeof magritApplication.questions; answers: Record<string, string>; onAnswer: (answers: Record<string, string>) => void }) {
+  const question = magritApplication.questions[questionKey];
+  const selected = question.answers.find((answer) => answer.id === answers[questionKey]);
+
+  return (
+    <div className="application-question">
+      <h3>{question.prompt}</h3>
+      <div className="choice-stack">{question.answers.map((answer) => <button key={answer.id} type="button" onClick={() => onAnswer({ ...answers, [questionKey]: answer.id })} className={answers[questionKey] === answer.id ? "selected" : ""} aria-pressed={answers[questionKey] === answer.id}>{answer.label}</button>)}</div>
+      {selected && <div className={`feedback ${selected.correct ? "correct" : "retry"}`} aria-live="polite"><strong>{selected.correct ? "Choix pertinent." : "À revoir."}</strong> {selected.feedback}</div>}
+    </div>
+  );
+}
+
 export default function App() {
   const [route, setRoute] = useState(window.location.hash || "#/");
   useEffect(() => { const update = () => setRoute(window.location.hash || "#/"); window.addEventListener("hashchange", update); return () => window.removeEventListener("hashchange", update); }, []);
+  if (route.startsWith("#/seance-2/magrit/application")) return <MagritApplication />;
   if (route.startsWith("#/seance-2/magrit")) return <MagritIntroduction />;
   return route.startsWith("#/seance-2") ? <SessionTwo /> : <Home />;
 }

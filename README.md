@@ -74,13 +74,18 @@ GitHub Pages héberge les supports publics et interactifs. UniversiTICE conserve
 
 Les réponses aux exercices interactifs de ce site ne sont ni envoyées ni enregistrées.
 
-## Séance 2 — décisions encore ouvertes
+## Séance 2 — jeu de travail et décisions encore ouvertes
 
-La deuxième partie, « Prendre en main Magrit », reste volontairement indépendante d’un jeu de données précis. Avant de construire l’étape suivante, l’équipe enseignante doit encore confirmer :
+Le parcours Magrit utilise le GeoPackage `data/donnees_commune_mutation_76.gpkg`. Il contient une couche communale de Seine-Maritime déjà associée à des indicateurs agrégés de mutations foncières. Une ligne correspond à une commune et la colonne `id` sert d’identifiant ; aucune jointure n’est demandée dans le parcours actuel.
 
-- le territoire et le jeu de données utilisés ;
-- les fichiers distribués aux étudiants et leur canal de diffusion ;
-- la présence ou non d’une jointure entre un fond de carte et une table ;
-- les identifiants à comparer et les contrôles attendus après la jointure ;
-- la première représentation à produire et le niveau attendu sur la discrétisation ;
+Le jeu a été préparé à partir du millésime de janvier 2025 des Demandes de valeurs foncières (DVF), récupéré sur data.gouv.fr, et des contours cadastraux Etalab. Les données initialement disponibles à la parcelle ont été fusionnées puis agrégées par commune pour la séance. Les sources sont diffusées sous Licence Ouverte 2.0.
+
+L’application propose une première carte de `valeur_fonciere_med`, puis une comparaison avec `valeur_fonciere_mean`. Les autres couples moyenne–médiane portent sur la surface réelle bâtie, le nombre de pièces principales et la surface du terrain.
+
+L’équipe enseignante doit encore confirmer :
+
+- le canal de diffusion du GeoPackage aux étudiants ;
+- la période de mutation effectivement couverte par le millésime de janvier 2025 ;
+- la documentation détaillée des règles d’agrégation ;
+- le niveau attendu sur la discrétisation ;
 - la durée exacte, la répartition de l’animation et l’éventuel livrable étudiant.

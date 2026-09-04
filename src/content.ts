@@ -96,9 +96,9 @@ export const magritIntroduction = {
   duration: "40 minutes environ",
   objectives: [
     "repérer les trois zones principales de l’interface ;",
-    "importer un fond de carte et, si besoin, une table de données ;",
+    "importer le GeoPackage des communes de Seine-Maritime ;",
     "contrôler les couches et les variables avant de cartographier ;",
-    "décrire ce qui est prêt et ce qui reste à relier ou à corriger.",
+    "décrire l’unité d’observation et les indicateurs disponibles.",
   ],
   interfaceZones: [
     {
@@ -137,8 +137,8 @@ export const magritIntroduction = {
       text: "Lancez Magrit dans un nouvel onglet et gardez ce support ouvert pour suivre les consignes.",
     },
     {
-      title: "Chargez les fichiers de la séance",
-      text: "Glissez-déposez les fichiers dans Magrit, ou ouvrez « Import des données » dans le menu latéral puis la fenêtre d’import.",
+      title: "Chargez le GeoPackage",
+      text: "Glissez-déposez donnees_commune_mutation_76.gpkg dans Magrit, ou ouvrez « Import des données » dans le menu latéral puis la fenêtre d’import.",
     },
     {
       title: "Lisez avant de valider",
@@ -150,10 +150,10 @@ export const magritIntroduction = {
     },
   ],
   verificationItems: [
-    "Je vois au moins une couche dans le gestionnaire.",
-    "Le fond de carte apparaît dans la zone centrale.",
-    "Je peux ouvrir le tableau associé à la couche ou à la table.",
-    "J’ai identifié ce que représente une ligne du tableau.",
+    "Je vois la couche spatial dans le gestionnaire.",
+    "Les communes de Seine-Maritime apparaissent dans la zone centrale.",
+    "Je peux ouvrir le tableau associé à la couche.",
+    "J’ai vérifié qu’une ligne correspond à une commune identifiée par id.",
   ],
   bonus: {
     title: "Questions bonus : enquêtez sur les données",
@@ -178,19 +178,19 @@ export const magritIntroduction = {
       },
       {
         id: "identifier",
-        label: "Défi 2 · Relier",
-        title: "Un identifiant commun garantit-il une bonne jointure ?",
+        label: "Défi 2 · Comparer",
+        title: "Moyenne et médiane racontent-elles la même chose ?",
         prompt:
-          "Si vous disposez d’une couche et d’une table séparée, comparez les colonnes qui pourraient servir à les relier.",
+          "Choisissez un même indicateur disponible avec les suffixes _mean et _med, puis comparez les deux distributions.",
         tasks: [
-          "Les identifiants ont-ils le même format dans les deux tableaux ?",
-          "Sont-ils uniques ou certains apparaissent-ils plusieurs fois ?",
-          "Des territoires semblent-ils présents d’un côté mais absents de l’autre ?",
+          "Repérez une commune dont la position relative change entre les deux variables.",
+          "Rappelez quelle mesure est la plus sensible aux valeurs extrêmes.",
+          "Formulez une hypothèse sur l’écart observé sans la présenter comme une explication démontrée.",
         ],
         answer:
-          "Concluez : la jointure paraît-elle possible immédiatement, possible après correction, ou impossible à évaluer ? Justifiez avec un contrôle précis.",
+          "Concluez sous la forme : « Pour cette commune, la moyenne est… tandis que la médiane est… ; cet écart pourrait indiquer… »",
         hint:
-          "Deux colonnes peuvent porter le même nom sans contenir exactement les mêmes codes. Comparez quelques valeurs, leur longueur, les éventuels zéros initiaux et le nombre de lignes.",
+          "La moyenne peut être fortement déplacée par quelques mutations de valeur élevée ou faible. La médiane décrit la valeur qui partage les observations en deux groupes de même effectif.",
       },
       {
         id: "anomaly",
@@ -214,7 +214,7 @@ export const magritIntroduction = {
   },
   checkpoint: {
     prompt:
-      "Un fond de carte et une table statistique sont bien importés. Quelle est la prochaine vérification utile ?",
+      "La couche communale et son tableau sont bien importés. Quelle est la prochaine décision utile ?",
     answers: [
       {
         id: "colors",
@@ -225,10 +225,10 @@ export const magritIntroduction = {
       },
       {
         id: "tables",
-        label: "Ouvrir les deux tableaux et chercher les identifiants communs",
+        label: "Formuler la question puis choisir l’indicateur qui y répond",
         correct: true,
         feedback:
-          "Oui. Cette vérification permet de comprendre les données et de préparer une éventuelle jointure sans perdre d’observations.",
+          "Oui. Le choix entre valeur, surface, nombre de pièces, moyenne et médiane dépend de la question posée.",
       },
       {
         id: "export",
@@ -239,4 +239,78 @@ export const magritIntroduction = {
       },
     ],
   },
+} as const;
+
+export const magritApplication = {
+  title: "Cartographier les mutations foncières",
+  duration: "Durée à confirmer",
+  objectives: [
+    "produire une carte communale d’un indicateur de valeur foncière ;",
+    "justifier une représentation en plages de couleurs ;",
+    "comparer une moyenne et une médiane portant sur le même phénomène ;",
+    "séparer description cartographique, interprétation et hypothèse explicative.",
+  ],
+  dataset: {
+    file: "donnees_commune_mutation_76.gpkg",
+    layer: "spatial",
+    territory: "Seine-Maritime",
+    unit: "la commune",
+    identifier: "id",
+    expectedFeatureCount: 708,
+    geometry: "MULTIPOLYGON",
+    crs: "EPSG:4326",
+    vintage: "janvier 2025",
+    sources: "Demandes de valeurs foncières (DVF) diffusées sur data.gouv.fr et contours cadastraux Etalab",
+    processing: "fusion des données à la parcelle, puis agrégation par commune réalisée pour cette séance",
+    license: "Licence Ouverte 2.0",
+    indicators: [
+      { theme: "Valeur foncière", unit: "euro", median: "valeur_fonciere_med", mean: "valeur_fonciere_mean" },
+      { theme: "Surface réelle bâtie", unit: "m²", median: "surface_reelle_bati_med", mean: "surface_reelle_bati_mean" },
+      { theme: "Nombre de pièces principales", unit: "nombre de pièces", median: "nombre_pieces_principales_med", mean: "nombre_pieces_principales_mean" },
+      { theme: "Surface du terrain", unit: "m²", median: "surface_terrain_med", mean: "surface_terrain_mean" },
+    ],
+  },
+  firstMapSteps: [
+    "Dans le menu des représentations, choisissez une carte en plages de couleurs.",
+    "Sélectionnez la couche spatial puis la variable valeur_fonciere_med.",
+    "Observez la distribution proposée avant de choisir une discrétisation.",
+    "Choisissez une palette ordonnée dont la progression reste lisible et évitez l’effet arc-en-ciel.",
+    "Ajoutez un titre qui nomme l’indicateur, l’unité territoriale et le territoire.",
+  ],
+  questions: {
+    variable: {
+      prompt: "Quelle variable répond le mieux à la question « Quelle est la valeur foncière médiane des mutations dans chaque commune ? »",
+      answers: [
+        { id: "valueMedian", label: "valeur_fonciere_med", correct: true, feedback: "Cette colonne correspond bien au phénomène, à la mesure résumée et à l’unité communale demandés." },
+        { id: "valueMean", label: "valeur_fonciere_mean", correct: false, feedback: "Cette variable décrit la moyenne, alors que la question porte explicitement sur la médiane." },
+        { id: "surfaceMedian", label: "surface_terrain_med", correct: false, feedback: "Cette variable résume la surface des terrains, pas leur valeur foncière." },
+      ],
+    },
+    representation: {
+      prompt: "Quelle représentation principale convient à cette médiane calculée pour chaque commune ?",
+      answers: [
+        { id: "areas", label: "Des plages de couleurs ordonnées", correct: true, feedback: "La médiane est un indicateur intensif : elle caractérise chaque commune sans être un total proportionnel à sa taille." },
+        { id: "symbols", label: "Des symboles proportionnels", correct: false, feedback: "Les symboles proportionnels conviennent d’abord aux stocks et effectifs. Ici, la variable est une valeur médiane." },
+      ],
+    },
+    comparison: {
+      prompt: "Pourquoi la carte de valeur_fonciere_mean peut-elle différer de celle de valeur_fonciere_med ?",
+      answers: [
+        { id: "extremes", label: "La moyenne est plus sensible aux valeurs extrêmes", correct: true, feedback: "Oui. Quelques mutations très élevées ou très faibles peuvent déplacer la moyenne davantage que la médiane." },
+        { id: "geometry", label: "La moyenne modifie les limites communales", correct: false, feedback: "Changer de variable statistique ne modifie pas la géométrie des communes." },
+        { id: "identifier", label: "La médiane remplace l’identifiant id", correct: false, feedback: "L’identifiant et l’indicateur ont deux rôles différents : id repère la commune, la médiane la caractérise." },
+      ],
+    },
+  },
+  productionChecks: [
+    "La légende indique clairement qu’il s’agit d’une valeur foncière médiane.",
+    "Les classes sont ordonnées et leurs bornes sont lisibles.",
+    "Les valeurs manquantes, si elles existent, sont distinguées des valeurs faibles.",
+    "Le titre ne prétend pas montrer un prix au m² ni une évolution temporelle.",
+  ],
+  interpretationPrompts: [
+    "Décrivez une organisation spatiale visible sans chercher à l’expliquer.",
+    "Repérez une commune ou un groupe de communes qui se distingue et appuyez-vous sur la légende.",
+    "Proposez une hypothèse explicative, puis nommez une donnée supplémentaire nécessaire pour l’examiner.",
+  ],
 } as const;
