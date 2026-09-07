@@ -89,3 +89,13 @@ L’équipe enseignante doit encore confirmer :
 - la documentation détaillée des règles d’agrégation ;
 - le niveau attendu sur la discrétisation ;
 - la durée exacte, la répartition de l’animation et l’éventuel livrable étudiant.
+
+## Séance 5 — parcours statistique dans R
+
+La séance 5 réactive d’abord le vocabulaire et les indicateurs descriptifs, puis introduit le nuage de points, la corrélation et la régression linéaire simple dans R. Une première manipulation reproductible utilise le jeu `cars` fourni avec R avant de revenir au GeoPackage de la séance 2 pour une ANOVA à un facteur.
+
+L’application communale compare `surface_reelle_bati_med` entre quatre classes construites à partir de `nombre_pieces_principales_med` : `0 déclaré`, `1–2`, `3–4` et `5 ou +`. La couche `spatial` contient 708 communes ; 688 disposent des deux valeurs nécessaires. Les seuils sont explicitement présentés comme un choix pédagogique et non comme une nomenclature officielle. La faible régression entre surface bâtie médiane et valeur foncière médiane reste accessible comme contre-exemple facultatif.
+
+Une dernière étape introduit les statistiques spatiales avec `sf` et `spdep`. Les étudiants construisent un voisinage communal de contiguïté de type queen, le contrôlent graphiquement, créent des poids standardisés par ligne et testent l’indice global de Moran par 999 permutations. Le Moran local et le test de l’autocorrélation des résidus de l’ANOVA sont proposés en approfondissement ; aucune valeur attendue n’est figée avant vérification du graphe réellement produit.
+
+Restent à confirmer pour cette séance : la durée exacte, les règles détaillées d’agrégation, le canal de diffusion du GeoPackage et l’éventuel livrable demandé.
